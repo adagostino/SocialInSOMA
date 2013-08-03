@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head lang="en">
+    <meta charset="utf-8" />
+    <title>Welcome</title>
+  </head>
+  <body>
+    <div id="container">
+      <input type="text" name="fname">
+      <a data-show="hello">Party</a>
+
+    </div>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="javascripts/sis.js" type="text/javascript"></script>
+    <script src="javascripts/inputs.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      $(document).ready(function(){
+          var i = new sis.TextInput("input[name='fname']",{
+            validate: function(val){
+              return val.length > 0;
+              },
+            done: function(val){
+              console.log("done",val);
+              },
+            fail: function(val){
+              $(this).css("color","red");
+              console.log("fail",val);
+            },
+            });
+          $("input").keydown(function(e){
+              e.which == 13 && console.log(i);
+              e.which == 13 && i.submit(this);
+            });
+
+          $("body").delegate("a[data-show]","click",function(){
+            console.log('sup');
+          });
+      });
+    </script>
+  </body>
+</html>
