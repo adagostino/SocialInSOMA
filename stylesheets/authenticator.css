@@ -1,0 +1,56 @@
+div.authenticator{
+  max-width: 350px;
+  min-width: 300px;
+  padding: 10px 20px;
+  margin: 20px;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+  -webkit-box-shadow: 0px 0px 3px 1px rgba(0,0,0,0.3);
+     -moz-box-shadow: 0px 0px 3px 1px rgba(0,0,0,0.3);
+          box-shadow: 0px 0px 3px 1px rgba(0,0,0,0.3);
+}
+
+ul{
+  padding: 0px;
+  margin: 0px;
+  list-style: none;
+  position: relative;
+}
+
+li.authPanel{
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+.authenticator input{
+  display: block;
+  width: 100%;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+  margin-top: .3em;
+  margin-bottom: 1em;
+  height: 30px;
+  padding: 3px;
+  font-size: 1em;
+}
+
+.authenticator input.error{
+  color: red;
+
+}
+
+.authenticator h2 {
+  padding: 0px;
+  margin: 5px 0px 15px 0px;
+  font-size: 1.5em;
+  font-weight: normal;
+}
+
+.authenticator label {
+  font-size: 0.9em;
+  font-weight: bold;
+}
+

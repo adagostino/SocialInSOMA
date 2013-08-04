@@ -3,18 +3,39 @@
   <head lang="en">
     <meta charset="utf-8" />
     <title>Welcome</title>
+    <link href="stylesheets/application.css" rel="stylesheet">
+    <link href="stylesheets/authenticator.css" rel="stylesheet">
+    <link href="stylesheets/buttons.css" rel=stylesheet">
   </head>
   <body>
     <div id="container">
-      <input type="text" name="fname">
-      <a data-show="hello">Party</a>
+      <div class="authenticator">
+        <ul>
+          <li data-name="signIn">
+            <form action="signIn">
+              <h2>Sign In</h2>
+              <label for="sign-in-email">E-mail</label>
+              <input name="email" id="sign-in-email" type="text">
+              <label for="sign-in-password">Password</label>
+              <input name="password" id="sign-in-password" type="password" class="inline">
+              <div class="btn"><span>Log In</span></div>
+            </form>
+            <div class="or">Or</div>
+            <div class="btn linkedIn"><span>Log in with LinkedIn</span></div>
+          </li>
+        </ul>
+      </div>
 
     </div>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="javascripts/sis.js" type="text/javascript"></script>
     <script src="javascripts/inputs.js" type="text/javascript"></script>
+    <script src="javascripts/authenticator.js" type="text/javascript"></script>
     <script type="text/javascript">
       $(document).ready(function(){
+          var a = new sis.Authenticator("div.authenticator");
+          //console.log(new Date("party") == "Invalid Date");
+          /*
           var i = new sis.TextInput("input[name='fname']",{
             validate: function(val){
               return val.length > 0;
@@ -31,10 +52,7 @@
               e.which == 13 && console.log(i);
               e.which == 13 && i.submit(this);
             });
-
-          $("body").delegate("a[data-show]","click",function(){
-            console.log('sup');
-          });
+          */
       });
     </script>
   </body>

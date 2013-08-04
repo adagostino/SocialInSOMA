@@ -35,21 +35,39 @@
     extend: function(namespace,x,publicMethods){
       //add x to sis
       var $this = this;
-      x.namespace = namespace;
-      // set up get/set functions for it to inherit
-      x.prototype.set = x.set || function(key,value,el){
-        return $this.data(el || x.$el,namespace,key,value);
-      };
-      x.prototype.get = x.get || function(key,el){
-        return $this.data(el || x.$el,namespace,key);
-      };
-      x.prototype.initialized = x.initialized || function(el){
-        var o = $this.data(el || x.$el,namespace);
-        for (var i in o){
-          return true;
+      // set up functions for it to inherit
+      var proto = {
+        namespace: namespace,
+        set: function(key,value,el){
+          return $this.data(el || this.$el,namespace,key,value);
+        },
+        get: function(key,el){
+          return $this.data(el || this.$el,namespace,key);
+        },
+        initialized: function(el){
+          var o = $this.data(el || this.$el,namespace);
+          for (var i in o){
+            return true;
+          }
+          return false;
+        },
+        setFunction: function(funcName,func,el){
+          if (typeof func !== "function" || typeof funcName !== "string" ) return this;
+          this.set(funcName,func,$(el || this.$el));
+          return this;
+        },
+        unsetFunction: function(funcName, el){
+          if (typeof funcName !== "string") return this;
+          this.set(funcName,null,$(el || this.$el));
+          return this;
+        },
+        call: function(funcName,context,paramArray){
+          return typeof this.get(funcName,context) === "function" ?  this.get(funcName,context).call(context,paramArray) : null;
         }
-        return false;
       };
+      for (var i in proto){
+        x.prototype[i] = proto[i];
+      }
       if (typeof publicMethods === "object"){
         for (var i in publicMethods){
           x.prototype[i] = publicMethods[i];
@@ -64,8 +82,9 @@
 
 // convenience function to check if element exists
 (function(sis){
-  sis.extend("exists",function(selector,parentSelector){
+  sis.extend("exists",function(selector,parentSelector,returnFirst){
     var $el = parentSelector ? $(parentSelector).find(selector) : $(selector);
-    return $el.length > 0 ? $el : null;
+    returnFirst = typeof returnFirst === "boolean" ? returnFirst : false;
+    return $el.length > 0 ? returnFirst ? $($el[0]) : $el : null;
   });
 })(sis);
