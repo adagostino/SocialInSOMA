@@ -1,0 +1,65 @@
+.tumblrDisplay{
+  position: relative;
+  text-align: center;
+  max-width: 100%;
+  min-width: 300px;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+  margin: 0 auto;
+  padding: 0px 20px 20px 20px;
+}
+
+.tempContent{
+  position: absolute;
+  opacity: 0;
+  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+  *filter:alpha(opacity=0);
+  -khtml-opacity: 0;
+}
+
+.content{
+  position: relative;
+}
+
+.tumblrDisplay ul{
+  list-style: none;
+  padding: 0;
+  display: inline;
+  margin: 0 auto;
+}
+
+.tumblrDisplay ul li{
+  float: left;
+  display: block;
+  margin: 10px;
+  padding: 0px;
+  width: 300px;
+  height: 300px;
+}
+
+.placeholder{
+  box-shadow: 0px 0px 3px rgba(0,0,0,0.6);
+  background: rgba(0,0,0,0.51);
+  position: relative;
+  visibility: hidden;
+}
+
+.loading{
+  font-size: 0.9em;
+  color: #fff;
+  line-height: 20px;
+  position: absolute;
+  text-align: center;
+  top: 50%;
+  width: 100%;
+  margin-top: -10px;
+}
+
+.tumblrDisplay img{
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}

@@ -154,10 +154,14 @@
 
 (function(sis){
   var namespace = "Authenticator";
-  var auth = function(el){
+  var auth = function(el,opts){
     if (!el) return null;
     this.$el = $(el);
     if (this.initialized()) return this;
+
+    if (opts){
+      this.onAuthenticated(opts.onAuthenticated);
+    }
 
     var $this = this;
     this.$el.each(function(idx){
@@ -177,9 +181,20 @@
     this.$el.delegate("li[data-name]","show",function(e,name){
       $this.show(name,null,e.delegateTarget)
     });
+    this.$el.delegate("form","authenticated",function(e){
+      console.log(e.delegateTarget);
+      $(e.delegateTarget).trigger("authenticated",e.delegateTarget);
+    });
+    this.$el.on("authenticated",function(e,target){
+      e.target === target && $this.call("authFunc",this);
+    });
   };
 
   var p = {
+    onAuthenticated: function(func,el){
+      this.setFunction("authFunc",func,el);
+      return this;
+    },
     show: function(name,time,el){
       var $this = this;
       time = typeof time === "number" ? time : 400;
@@ -282,7 +297,11 @@
     var pass  = createNameInput("Please enter your password",
                 createInput("password","Password","password","sign-in-password",form));
     var btn = sis.exists(".btn",form,true) || $("<div>",{"class": "btn", html: "<span>Sign In</span>"}).appendTo(form);
-    var f = new sis.Form(form);
+    var f = new sis.Form(form,{
+      done: function(){
+        $(this).trigger("authenticated");
+      }
+    });
     pass.$el.keyup(function(e){
       e.which == 13 && btn.click();
     });
@@ -319,7 +338,11 @@
     var btn = sis.exists(".btn",form,true) || $("<div>",{"class": "btn", html: "<span>Create Account</span>"}).appendTo(form);
 
 
-    var f = new sis.Form(form);
+    var f = new sis.Form(form,{
+      done: function(){
+        $(this).trigger("authenticated");
+      }
+    });
 
     $(pass.$el).keyup(function(e){
       e.which == 13 && btn.click();
@@ -383,7 +406,11 @@
     var form = sis.exists("form",li,true) || $("<form>",{"action":"recoverPass"}).appendTo(li);
     var email = createEmailInput(createInput("text","E-mail","email","recoverPass-email",form));
     var btn = sis.exists(".btn",form,true) || $("<div>",{"class": "btn", html: "<span>Recover Password</span>"}).appendTo(form);
-    var f = new sis.Form(form);
+    var f = new sis.Form(form,{
+      done: function(){
+        $(this).trigger("authenticated");
+      }
+    });
 
     $(email.$el).keyup(function(e){
       e.which == 13 && btn.click();
@@ -416,7 +443,11 @@
                 createInput("text","Last Name","lname","recoverUser-last-name",form));
     var bday = createDateInput(createInput("text","Birthday","bday","recoverUser-bday",form));
     var btn = sis.exists(".btn",form,true) || $("<div>",{"class": "btn", html: "<span>Recover Username</span>"}).appendTo(form);
-    var f = new sis.Form(form);
+    var f = new sis.Form(form,{
+      done: function(){
+        $(this).trigger("authenticated");
+      }
+    });
 
     $(bday.$el).keyup(function(e){
       e.which == 13 && btn.click();

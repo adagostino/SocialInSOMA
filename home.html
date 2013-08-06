@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head lang="en">
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Home</title>
+    <link href="stylesheets/application.css" rel="stylesheet">
+    <link href="stylesheets/buttons.css" rel="stylesheet">
+    <link href="stylesheets/inputs.css" rel="stylesheet">
+    <link href="stylesheets/homepage.css" rel="stylesheet">
+    <link href="stylesheets/navBar.css" rel="stylesheet">
+    <link href="stylesheets/tumblrdisplay.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="navBar">
+      <div class="brand">
+        Social in SOMA
+      </div>
+      <div class="signOut">
+        Sign Out
+      </div>
+    </div>
+    <div id="container">
+      <div class="tumblrControl">
+        <div class="control">
+          <div class="left">
+            <input type="text" placeholder="Input the name of a Tumblr blog">
+          </div>
+          <span class="btn">Search</span>
+        </div>
+      </div>
+
+      <div class="tumblrDisplay">
+
+      </div>
+    </div>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="javascripts/sis.js" type="text/javascript"></script>
+    <script src="javascripts/inputs.js" type="text/javascript"></script>
+    <script src="javascripts/tumblrdisplay.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      $(document).ready(function(){
+
+        var btn = new sis.Button($(".tumblrControl .btn"));
+        var input = $(".tumblrControl input").keydown(function(e){
+          e.which === 13 && btn.$el.click();
+        });
+        var td = new sis.TumblrDisplay(".tumblrDisplay",{
+          done: function(){
+            btn.enable().$el.text("Search");
+          }
+        });
+        btn.click(function(){
+          btn.disable().$el.text("Fetching");
+          td.fetch(input.val());
+        });
+
+
+      });
+    </script>
+  </body>
+</html>

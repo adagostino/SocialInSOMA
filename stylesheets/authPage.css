@@ -1,0 +1,24 @@
+body.splash{
+  background: #333;
+  background: url('../images/background.jpg') no-repeat;
+  background-size: cover;
+}
+
+#container{
+  max-width: 800px;
+  min-width: 300px;
+  margin: 0 auto;
+}
+
+.copy{
+  min-width: 300px;
+  max-width: 350px;
+  margin: 0 auto;
+}
+
+.copy h1{
+  color: #fff;
+  line-height: 80px;
+  font-size: 45px;
+  text-shadow: 0px 0px 1px rgba(255,255,255,0.8);
+}
