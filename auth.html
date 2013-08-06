@@ -9,38 +9,41 @@
     <link href="stylesheets/authenticator.css" rel="stylesheet">
     <link href="stylesheets/buttons.css" rel="stylesheet">
   </head>
-  <body>
+  <body class="splash">
     <div id="container">
-      <div class="authenticator">
-        <ul>
-          <li class="authPanel" data-name="signIn" data-out="fade" data-in="fade">
-            <form action="signIn">
-              <h2>Sign In</h2>
-              <label for="sign-in-email">E-mail</label>
-              <input name="email" id="sign-in-email" type="text">
-              <label for="sign-in-password">Password</label>
-              <input name="password" id="sign-in-password" type="password" class="inline">
-              <div class="btn"><span>Sign In</span></div>
-            </form>
-            <div class='troubleLink'><a class="panelLink" data-show="trouble">Can't sign into your account?</a></div>
-            <div class="or">
-              <div class="hr"></div>
-              <div class="text">Or</div>
-            </div>
-            <table class="linkedIn">
-              <tbody>
-                <tr><td class="logo"><div></div></td><td class="text"><div>Sign in with LinkedIn</div></td></tr>
-              </tbody>
-            </table>
-            <div class="or">
-              <div class="hr"></div>
-              <div class="text">Or</div>
-            </div>
-            <a data-show="create"><div class="btn"><span>Create an Account</span></div></a>
-          </li>
+        <div class="copy">
+          <h1>Social in SOMA</h1>
+        </div>
 
-        </ul>
-      </div>
+          <div class="authenticator">
+            <ul>
+              <li class="authPanel" data-name="signIn" data-out="fade" data-in="fade">
+                <form action="signIn">
+                  <h2>Sign In</h2>
+                  <label for="sign-in-email">E-mail</label>
+                  <input name="email" id="sign-in-email" type="text">
+                  <label for="sign-in-password">Password</label>
+                  <input name="password" id="sign-in-password" type="password" class="inline">
+                  <div class="btn"><span>Sign In</span></div>
+                </form>
+                <div class='troubleLink'><a class="panelLink" data-show="trouble">Can't sign into your account?</a></div>
+                <div class="or">
+                  <div class="hr"></div>
+                  <div class="text">Or</div>
+                </div>
+                <table class="linkedIn">
+                  <tbody>
+                    <tr><td class="logo"><div></div></td><td class="text"><div>Sign in with LinkedIn</div></td></tr>
+                  </tbody>
+                </table>
+                <div class="or">
+                  <div class="hr"></div>
+                  <div class="text">Or</div>
+                </div>
+                <a data-show="create"><div class="btn"><span>Create an Account</span></div></a>
+              </li>
+            </ul>
+          </div>
 
     </div>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
@@ -49,26 +52,7 @@
     <script src="javascripts/authenticator.js" type="text/javascript"></script>
     <script type="text/javascript">
       $(document).ready(function(){
-          var a = new sis.Authenticator("div.authenticator");
-          //console.log(new Date("party") == "Invalid Date");
-          /*
-          var i = new sis.TextInput("input[name='fname']",{
-            validate: function(val){
-              return val.length > 0;
-              },
-            done: function(val){
-              console.log("done",val);
-              },
-            fail: function(val){
-              $(this).css("color","red");
-              console.log("fail",val);
-            },
-            });
-          $("input").keydown(function(e){
-              e.which == 13 && console.log(i);
-              e.which == 13 && i.submit(this);
-            });
-          */
+        var a = new sis.Authenticator("div.authenticator");
       });
     </script>
   </body>
