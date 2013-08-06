@@ -227,7 +227,6 @@
       $(el || this.$el).each(function(idx){
         //empty and hide the alert
         var a = $this.get("alert",this);
-
         (a && a.is(":visible")) && a.hide().empty();
         $this.call("doneFunction",this, so);
         $this.get("submitButton",this) && $this.get("submitButton",this).enable();
@@ -238,7 +237,12 @@
       var $this = this;
       $(el || this.$el).each(function(idx){
         // get the alert
-        var a = $this.get("alert",this) || $this.set("alert",$("<div>",{"class":"alert"}).hide().appendTo(this),this);
+        console.log($(this).find("input:last")[0]);
+        var a = $this.get("alert",this) || $this.set("alert", (function(form){
+          var a = $("<div>",{"class":"alert"}).hide();
+          $(form).find("input:last").after(a);
+          return a;
+        })(this),this);
         // fill the alert
         for (var i=0; i<errorArray.length; i++){
           a.append($("<div>",{html: errorArray[i]}));

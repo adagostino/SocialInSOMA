@@ -22,7 +22,7 @@
 
     this.$el.delegate("a[data-show]","click",function(e){
       e.preventDefault();
-      var $t = $(e.delegateTarget);
+      var $t = $(this);
       $t.trigger("show",$t.attr("data-show"));
     });
     return this;
@@ -79,8 +79,14 @@
       var cssStart = {
         marginTop: 0,
         marginLeft: 0,
+        top: 0,
+        left: 0,
+        opacity: out ? 0 : 1,
+        position: "absolute"
       };
       var cssEnd = {};
+      var wh = this.getWidthHeight();
+      //console.log(this.$el.attr("data-name"),this.getWidthHeight());
       $el.each(function(idx){
         var dir = $this.getDir(out,this);
         switch(dir){
@@ -92,28 +98,35 @@
             cssStart.marginLeft = "100%";
             cssEnd.marginLeft = "0";
             break;
-          case "top":
-            cssStart.marginTop = "-100%";
+          case "up":
+            cssStart.marginTop = out ? -wh.height : wh.height;
             cssEnd.marginTop = "0";
             break;
-          case "bottom":
-            cssStart.marginTop = "100%";
+          case "down":
+            cssStart.marginTop = out ? wh.height : -wh.height;
             cssEnd.marginTop = "0";
             break;
           case "fade":
-            cssStart.opactiy = 0;
+            cssStart.opacity = 0;
             cssEnd.opacity = 1;
             break;
           default:
             cssStart.opacity = 1;
             cssEnd.opacity = 1;
-            time = 0;
             break;
         };
         var hs = out ? "Hide" : "Show";
         !out && $(this).css(cssStart).show();
         $this.call("before"+hs,this);
         $(this).animate(out ? cssStart : cssEnd,time,function(){
+          out ? $(this).hide().css({
+            marginTop: 0,
+            marginLeft: 0,
+            top: 0,
+            left: 0,
+            opacity: 1,
+            position: "absolute"
+          }) : $(this).css("position","relative");
           $this.call("after"+hs,this);
         });
       });
@@ -150,32 +163,47 @@
     this.$el.each(function(idx){
       // get the unordered list containing all authPanels
       var ul = sis.exists("ul",this,true) || $("<ul>").appendTo(this);
+      var $t = $(this);
       $this.set("ul",ul,this);
       // assign and store existing auth panels (denoted by data-name attribute)
+
       ul.find("li").each(function(){
         var n = $(this).attr("data-name");
-        $this.getPanel(n,this);
-        //name && $this.set(name,new sis.AuthPanel(this));
-
+        $this.getPanel(n,$t);
       });
-
     });
+    this.set("current","signIn");
     // bind the show/hide
     this.$el.delegate("li[data-name]","show",function(e,name){
-      $this.show(name,e.delegateTarget)
+      $this.show(name,null,e.delegateTarget)
     });
   };
 
   var p = {
-    show: function(name,el){
+    show: function(name,time,el){
+      var $this = this;
+      time = typeof time === "number" ? time : 400;
+      $(el || this.$el).each(function(){
+        var s = $this.getPanel(name,this);
+        var h = $this.getPanel($(this).find("li.authPanel:visible").attr("data-name"),this);
+        var ul = $this.get("ul",this);
+        var wh = s.getWidthHeight();
+        ul.animate({
+          height: wh.height
+        },time);
+        h.hide(time);
+        s.show(time);
+      });
 
     },
     getPanel: function(panel,el){
       if (typeof panel !== "string") return null;
-
       switch(panel.toLowerCase()){
         case "signin":
           return this.getSignInPanel(el);
+          break;
+        case "trouble":
+          return this.getTroublePanel(el);
           break;
         case "create":
           return this.getCreatePanel(el);
@@ -183,7 +211,7 @@
         case "recoverpass":
           return this.getPassPanel(el);
           break;
-        case "reoveruser":
+        case "recoveruser":
           return this.getUserPanel(el);
           break;
         default:
@@ -196,7 +224,48 @@
       var $this = this;
       var a = [];
       $el.each(function(ind){
-        a.push($this.get("signIn",this) ? $this.get("signIn",this) : $this.set("signIn",createSignInPanel($this.get("ul",this)),this));
+        var sip = $this.get("signIn",this) || $this.set("signIn",createSignInPanel($this.get("ul",this)),this);
+        a.push(sip);
+      });
+      return a.length == 1 ? a[0] : a;
+    },
+    getCreatePanel: function(el){
+      var $el = $(el || this.$el);
+      var $this = this;
+      var a = [];
+      $el.each(function(ind){
+        var sip = $this.get("create",this) || $this.set("create",createCreatePanel($this.get("ul",this)),this);
+        a.push(sip);
+      });
+      return a.length == 1 ? a[0] : a;
+    },
+    getTroublePanel: function(el){
+      var $el = $(el || this.$el);
+      var $this = this;
+      var a = [];
+      $el.each(function(ind){
+        var sip = $this.get("trouble",this) || $this.set("trouble",createTroublePanel($this.get("ul",this)),this);
+        a.push(sip);
+      });
+      return a.length == 1 ? a[0] : a;
+    },
+    getPassPanel: function(el){
+      var $el = $(el || this.$el);
+      var $this = this;
+      var a = [];
+      $el.each(function(ind){
+        var sip = $this.get("recoverPass",this) || $this.set("recoverPass",createPassPanel($this.get("ul",this)),this);
+        a.push(sip);
+      });
+      return a.length == 1 ? a[0] : a;
+    },
+    getUserPanel: function(el){
+      var $el = $(el || this.$el);
+      var $this = this;
+      var a = [];
+      $el.each(function(ind){
+        var sip = $this.get("recoverUser",this) || $this.set("recoverUser",createUserPanel($this.get("ul",this)),this);
+        a.push(sip);
       });
       return a.length == 1 ? a[0] : a;
     }
@@ -204,27 +273,170 @@
 
   // private functions
   function createSignInPanel(ul){
+    // not really finished with this function but good enough for now since it's created using html
     var li = sis.exists("li[data-name='signIn']",ul,true) || $("<li>",{"data-name":"signIn"}).appendTo(ul);
     var hdr = sis.exists("h2",li,true) || li.prepend($("<h2>",{text: "Sign In"}));//.after(li);
 
     var form = sis.exists("form",li,true);
-    var email = createEmailInput(sis.exists("input[name='email'][type='text']",form,true) || $("<input>",{name: "email", type: "text"}).appendTo(form));
-    email.$el.attr("id","sign-in-email");
-    sis.exists("label[for='sign-in-email']",li,true) || email.$el.before($("<label>",{"for":"sign-in-email", text: "E-mail"}));
-    var pass = createNameInput("Please enter your password",sis.exists("input[name='password'][type='password']",form,true) || $("<input>",{name: "password", type: "password"}).appendTo(form));
-    pass.$el.attr("id","sign-in-password");
-    sis.exists("label[for='sign-in-password']",li,true) || pass.$el.before($("<label>",{"for":"sign-in-password", text: "Password"}));
+    var email = createEmailInput(createInput("text","E-mail","email","sign-in-email",form));
+    var pass  = createNameInput("Please enter your password",
+                createInput("password","Password","password","sign-in-password",form));
     var btn = sis.exists(".btn",form,true) || $("<div>",{"class": "btn", html: "<span>Sign In</span>"}).appendTo(form);
     var f = new sis.Form(form);
     pass.$el.keyup(function(e){
       e.which == 13 && btn.click();
     });
 
-    return new sis.AuthPanel(li)
+    return new sis.AuthPanel(li,{
+      afterShow: function(){
+        $(ul).height("auto");
+        $(ul).trigger("afterShow");
+      }
+    });
   }
 
   function createCreatePanel(ul){
-    var li = sis.exists("li[data-name='signIn']",ul,true) || $("<li>",{"data-name":"signIn"}).appendTo(ul);
+    var li = sis.exists("li[data-name='create']",ul,true)
+      || $("<li>",{
+            "data-name":"create",
+            "data-in": "up",
+            "data-out": "down"
+          }).hide().appendTo(ul);
+    li.addClass("authPanel");
+    var xout = sis.exists("a.xout",li,true) || $("<a>",{"class": "xout", html: "<div>&times;</div>"}).appendTo(li);
+    xout.attr("data-show","signIn");
+    var hdr = sis.exists("h2",li,true) || $("<h2>",{text: "Create an Account"}).appendTo(li);
+    var form = sis.exists("form",li,true) || $("<form>",{"action":"create"}).appendTo(li);
+    var fname = createNameInput("Please enter your first name",
+                createInput("text","First Name","fname","create-first-name",form));
+    var lname = createNameInput("Please enter your last name",
+                createInput("text","Last Name","lname","create-last-name",form));
+    var email = createEmailInput(createInput("text","E-mail","email","create-email",form));
+    var pass  = createNameInput("Please enter a password",
+                createInput("password","Password","password","create-password",form));
+    var cpass = createConfirmPassInput(pass.$el[0],
+                createInput("password","Confirm Password","cpassword","create-confirm-password",form));
+    var btn = sis.exists(".btn",form,true) || $("<div>",{"class": "btn", html: "<span>Create Account</span>"}).appendTo(form);
+
+
+    var f = new sis.Form(form);
+
+    $(pass.$el).keyup(function(e){
+      e.which == 13 && btn.click();
+    });
+    $(cpass.$el).keyup(function(e){
+      e.which == 13 && btn.click();
+    });
+
+    return new sis.AuthPanel(li,{
+      afterShow: function(){
+        $(ul).height("auto");
+        $(ul).trigger("afterShow");
+      }
+    });
+  }
+
+  function createTroublePanel(ul){
+    var li = sis.exists("li[data-name='trouble']",ul,true)
+      || $("<li>",{
+            "data-name":"trouble",
+            "data-in": "down",
+            "data-out": "up"
+          }).hide().appendTo(ul);
+    li.addClass("authPanel");
+    var xout = sis.exists("a.xout",li,true) || $("<a>",{"class": "xout", html: "<div>&times;</div>"}).appendTo(li);
+    var hdr = sis.exists("h2",li,true) || $("<h2>",{text: "Having Trouble?"}).appendTo(li);
+
+    xout.attr("data-show","signIn");
+    var pass = sis.exists("a.panelLink[data-show='recoverPass']",li,true) || $("<div>",{
+      "class":"troubleLink",
+      html: "<a class='panelLink' data-show='recoverPass'>Forgot your password?</a>"
+    }).appendTo(li);
+    var user = sis.exists("a.panelLink[data-show='recoverUser']",li,true) || $("<div>",{
+      "class":"troubleLink",
+      html: "<a class='panelLink' data-show='recoverUser'>Forgot your username?</a>"
+    }).appendTo(li);
+
+
+    return new sis.AuthPanel(li,{
+      afterShow: function(){
+        $(ul).height("auto");
+        $(ul).trigger("afterShow");
+      }
+    });
+  };
+
+  function createPassPanel(ul){
+    var li = sis.exists("li[data-name='recoverPass']",ul,true)
+      || $("<li>",{
+            "data-name":"recoverPass",
+            "data-in": "left",
+            "data-out": "left"
+          }).hide().appendTo(ul);
+    li.addClass("authPanel");
+    var xout = sis.exists("a.xout",li,true) || $("<a>",{"class": "xout", html: "<div>&times;</div>"}).appendTo(li);
+    xout.attr("data-show","signIn");
+    var hdr = sis.exists("h2",li,true) || $("<h2>",{text: "Recover Password"}).appendTo(li);
+
+
+
+    var form = sis.exists("form",li,true) || $("<form>",{"action":"recoverPass"}).appendTo(li);
+    var email = createEmailInput(createInput("text","E-mail","email","recoverPass-email",form));
+    var btn = sis.exists(".btn",form,true) || $("<div>",{"class": "btn", html: "<span>Recover Password</span>"}).appendTo(form);
+    var f = new sis.Form(form);
+
+    $(email.$el).keyup(function(e){
+      e.which == 13 && btn.click();
+    });
+
+    return new sis.AuthPanel(li,{
+      afterShow: function(){
+        $(ul).height("auto");
+        $(ul).trigger("afterShow");
+      }
+    });
+  }
+
+  function createUserPanel(ul){
+    var li = sis.exists("li[data-name='recoverUser']",ul,true)
+      || $("<li>",{
+            "data-name":"recoverUser",
+            "data-in": "right",
+            "data-out": "right"
+          }).hide().appendTo(ul);
+    li.addClass("authPanel");
+
+    var xout = sis.exists("a.xout",li,true) || $("<a>",{"class": "xout", html: "<div>&times;</div>"}).appendTo(li);
+    xout.attr("data-show","signIn");
+    var hdr = sis.exists("h2",li,true) || $("<h2>",{text: "Recover Username"}).appendTo(li);
+    var form = sis.exists("form",li,true) || $("<form>",{"action":"recoverUser"}).appendTo(li);
+    var fname = createNameInput("Please enter your first name",
+                createInput("text","First Name","fname","recoverUser-first-name",form));
+    var lname = createNameInput("Please enter your last name",
+                createInput("text","Last Name","lname","recoverUser-last-name",form));
+    var bday = createDateInput(createInput("text","Birthday","bday","recoverUser-bday",form));
+    var btn = sis.exists(".btn",form,true) || $("<div>",{"class": "btn", html: "<span>Recover Username</span>"}).appendTo(form);
+    var f = new sis.Form(form);
+
+    $(bday.$el).keyup(function(e){
+      e.which == 13 && btn.click();
+    });
+
+    return new sis.AuthPanel(li,{
+      afterShow: function(){
+        $(ul).height("auto");
+        $(ul).trigger("afterShow");
+      }
+    });
+  };
+
+  function createInput(type,title,name,id,form){
+    sis.exists("label[for='"+id+"']",form,true) || $("<label>",{"for":id,text:title}).appendTo(form);
+    return sis.exists("input[name='"+name+"']",form,true) || $("<input>",{
+      name: name,
+      id: id,
+      type: type
+    }).appendTo(form);
   }
 
   function createNameInput(failText,el){
@@ -273,15 +485,29 @@
       },
       parse: function(val){
         var d = new Date(val);
-        return {month: 1 + d.getMonth(), date: d.getDate(), year: d.getFullYear()}
+        return (1+d.getMonth())+"/"+d.getDate()+"/"+d.getFullYear();
       },
       failText: "Please enter a valid date (e.g., mm/dd/yyyy)"
     });
     return i;
   }
 
-  function createPassInput(el){
-
+  function createConfirmPassInput(opass,el){
+    var i = new sis.TextInput(el,{
+      validate: function(val){
+        var v = $.trim(val);
+        var ov = $.trim($(opass).val());
+        return v > 0 && v == ov;
+      },
+      done: function(val){
+        $(this).removeClass("error");
+      },
+      fail: function(val){
+        $(this).addClass("error");
+      },
+      failText: "Please make sure the 'Password' and 'Confirm Password' fields match"
+    });
+    return i;
   }
   sis.extend(namespace,auth,p);
 

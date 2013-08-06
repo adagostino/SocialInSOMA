@@ -1,4 +1,4 @@
-div.authenticator{
+.authenticator{
   max-width: 350px;
   min-width: 300px;
   padding: 10px 20px;
@@ -6,25 +6,35 @@ div.authenticator{
   -webkit-box-sizing: border-box;
      -moz-box-sizing: border-box;
           box-sizing: border-box;
-  -webkit-box-shadow: 0px 0px 3px 1px rgba(0,0,0,0.3);
-     -moz-box-shadow: 0px 0px 3px 1px rgba(0,0,0,0.3);
-          box-shadow: 0px 0px 3px 1px rgba(0,0,0,0.3);
+  -webkit-box-shadow: 0px 0px 8px rgba(255,255,255,.8);
+     -moz-box-shadow: 0px 0px 8px rgba(255,255,255,.8);
+          box-shadow: 0px 0px 8px rgba(255,255,255,.8);
+  background: #fff;
+  border: 4px solid #ccc;
+  color: #333;
+  //background-image: linear-gradient(to bottom, #ffffff, rgb(250,250,250));
 }
 
-ul{
+.authenticator ul{
   padding: 0px;
   margin: 0px;
   list-style: none;
   position: relative;
+  overflow: hidden;
 }
 
-li.authPanel{
-  position: absolute;
+.authenticator li.authPanel{
+  position: relative;
   top: 0px;
   left: 0px;
+  background: #fff;
+  width: 100%;
+  z-index: 1;
+  margin: 0px;
+  padding: 0px;
 }
 
-.authenticator input{
+input{
   display: block;
   width: 100%;
   -webkit-box-sizing: border-box;
@@ -35,11 +45,28 @@ li.authPanel{
   height: 30px;
   padding: 3px;
   font-size: 1em;
+  outline: none;
+  border: 1px solid #d9d9d9;
+  -webkit-transition: all 0.218s;
+     -moz-transition: all 0.218s;
+          transition: all 0.218s;
 }
 
-.authenticator input.error{
-  color: red;
+input:hover{
+  border: 1px solid #ccc;
+}
 
+input:focus{
+  border: 1px solid #5bc0de;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.3), 0px 0px 3px rgba(91,192,222,0.4);
+}
+
+input.error{
+  border: 1px solid #c9302c;
+}
+
+input.error:hover{
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.3), 0px 0px 3px rgba(212,63,58,0.4);
 }
 
 .authenticator h2 {
@@ -54,3 +81,75 @@ li.authPanel{
   font-weight: bold;
 }
 
+.alert{
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+  border: 1px solid #5bc0de;
+  border: 1px solid #357ebd;
+  background: rgba(91,192,222,0.4);
+  color: #357ebd;
+  padding: 0.5em;
+}
+
+.alert div{
+  margin: .25em 0;
+}
+
+.or {
+  position: relative;
+  height: 1em;
+}
+
+.or .text{
+  background: #fff;
+  text-align: center;
+  margin: 0 auto;
+  width: 3em;
+  z-index: 1;
+  position: relative;
+  font-weight: bold;
+  font-size: 0.9em;
+}
+
+.or .hr {
+  width: 100%;
+  height: 2px;
+  background: #ccc;
+  position: absolute;
+  top: 50%;
+  z-index: 0px;
+}
+
+form .btn{
+  margin-top: 1.5em;
+}
+
+.xout{
+  position: relative;
+  left: 100%;
+  margin-left: -12px;
+  cursor: pointer;
+  line-height: 16px;
+  display: inline-block;
+}
+
+.xout:hover {
+  font-weight: bold;
+  //top: -1px;
+}
+
+.troubleLink{
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+
+}
+
+.panelLink{
+  color: #428bca;
+  cursor: pointer;
+}
+
+.panelLink:hover{
+  text-decoration: underline;
+}

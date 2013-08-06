@@ -2,27 +2,43 @@
 <html lang="en">
   <head lang="en">
     <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>Welcome</title>
     <link href="stylesheets/application.css" rel="stylesheet">
     <link href="stylesheets/authenticator.css" rel="stylesheet">
-    <link href="stylesheets/buttons.css" rel=stylesheet">
+    <link href="stylesheets/buttons.css" rel="stylesheet">
   </head>
   <body>
     <div id="container">
       <div class="authenticator">
         <ul>
-          <li data-name="signIn">
+          <li class="authPanel" data-name="signIn" data-out="fade" data-in="fade">
             <form action="signIn">
               <h2>Sign In</h2>
               <label for="sign-in-email">E-mail</label>
               <input name="email" id="sign-in-email" type="text">
               <label for="sign-in-password">Password</label>
               <input name="password" id="sign-in-password" type="password" class="inline">
-              <div class="btn"><span>Log In</span></div>
+              <div class="btn"><span>Sign In</span></div>
             </form>
-            <div class="or">Or</div>
-            <div class="btn linkedIn"><span>Log in with LinkedIn</span></div>
+            <div class='troubleLink'><a class="panelLink" data-show="trouble">Can't sign into your account?</a></div>
+            <div class="or">
+              <div class="hr"></div>
+              <div class="text">Or</div>
+            </div>
+            <table class="linkedIn">
+              <tbody>
+                <tr><td class="logo"><div></div></td><td class="text"><div>Sign in with LinkedIn</div></td></tr>
+              </tbody>
+            </table>
+            <div class="or">
+              <div class="hr"></div>
+              <div class="text">Or</div>
+            </div>
+            <a data-show="create"><div class="btn"><span>Create an Account</span></div></a>
           </li>
+
         </ul>
       </div>
 
